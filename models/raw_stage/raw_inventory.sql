@@ -34,4 +34,3 @@ LEFT JOIN {{ source('tpch_sample', 'REGION') }} AS e
     ON d.N_REGIONKEY = e.R_REGIONKEY
 JOIN {{ ref('raw_orders') }} AS f
     ON a.PS_PARTKEY = f.PARTKEY AND a.PS_SUPPKEY=f.SUPPLIERKEY
-ORDER BY a.PS_PARTKEY, a.PS_SUPPKEY
