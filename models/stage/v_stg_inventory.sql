@@ -64,21 +64,36 @@ hashed_columns:
 {%- endset -%}
 
 {% set metadata_dict = fromyaml(yaml_metadata) %}
-
 {% set source_model = metadata_dict['source_model'] %}
-
 {% set derived_columns = metadata_dict['derived_columns'] %}
-
 {% set hashed_columns = metadata_dict['hashed_columns'] %}
 
+{% if target.type == 'snowflake' %}
+  
+  WITH staging AS (
+  {{ automate_dv.stage(include_source_columns=true,
+                      source_model=source_model,
+                      derived_columns=derived_columns,
+                      hashed_columns=hashed_columns,
+                      ranked_columns=none) }}
+  )
 
-SELECT staging.*,
-       TO_DATE('{{ var('load_date') }}') AS LOAD_DATE,
-       TO_DATE('{{ var('load_date') }}') AS EFFECTIVE_FROM
-FROM (
-{{ automate_dv.stage(include_source_columns=true,
-                     source_model=source_model,
-                     derived_columns=derived_columns,
-                     hashed_columns=hashed_columns,
-                     ranked_columns=none) }}
-) staging
+  SELECT *, 
+        TO_DATE('{{ var('load_date') }}') AS LOAD_DATE,
+        TO_DATE('{{ var('load_date') }}') AS EFFECTIVE_FROM
+  FROM staging
+
+{% elif target.type == 'teradata' %}
+
+  {{ automate_dv.stage(include_source_columns=true,
+                      source_model=source_model,
+                      derived_columns=derived_columns,
+                      hashed_columns=hashed_columns,
+                      ranked_columns=none) }}
+
+  SELECT staging.*, 
+        CAST ('{{ var('load_date') }}' AS DATE FORMAT 'YYYY-MM-DD') AS LOAD_DATE,
+        CAST ('{{ var('load_date') }}' AS DATE FORMAT 'YYYY-MM-DD') AS EFFECTIVE_FROM
+  FROM staging
+
+{% endif %}

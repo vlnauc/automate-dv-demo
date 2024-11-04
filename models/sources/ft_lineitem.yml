@@ -1,0 +1,63 @@
+version: 2
+
+sources:
+  - name: teradata_external
+    database: MANDATUM
+    schema: TPCH_SF_1
+    loader: S3
+  
+    tables:
+      - name: FT_LINEITEM
+        external:
+          location: "/s3/s3.us-east-1.amazonaws.com/redshift-downloads/TPC-H/2.18/10GB/lineitem.tbl"        # Amazon S3 path prefix
+          tbl_properties: "MAP = TD_MAP1"
+         
+        columns:
+          - name: L_ORDERKEY
+            data_type: INTEGER
+
+          - name: L_PARTKEY
+            data_type: INTEGER
+
+          - name: L_SUPPKEY
+            data_type: INTEGER
+
+          - name: L_LINENUMBER
+            data_type: INTEGER
+
+          - name: L_QUANTITY
+            data_type: INTEGER
+
+          - name: L_EXTENDEDPRICE
+            data_type: DECIMAL(10,2)
+
+          - name: L_DISCOUNT
+            data_type: DECIMAL(2,2)
+
+          - name: L_TAX
+            data_type: DECIMAL(2,2)
+
+          - name: L_RETURNFLAG
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: L_LINESTATUS
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: L_SHIPDATE
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: L_COMMITDATE
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: L_RECEIPTDATE
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: L_SHIPINSTRUCT
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: L_SHIPMODE
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: L_COMMENT
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+

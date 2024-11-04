@@ -1,14 +1,57 @@
 version: 2
 
 sources:
-  - name: tpch_sample
-    schema: XXXX_TPCH_SF
+  - name: tpch_data_teradata
+    database: MANDATUM
+    schema: TPCH_SF_1
+    tables: 
+      - name: raw_acq_lineitem
+      - name: raw_acq_customer
+      - name: raw_acq_orders
+      - name: raw_acq_partsupp
+      - name: raw_acq_supplier
+      - name: raw_acq_part
+      - name: raw_acq_nation
+      - name: raw_acq_region
+
+  - name: tpch_data_snowflake
+    database: SNOWFLAKE_SAMPLE_DATA
+    schema: TPCH_SF{{ var('tpch_size') }}
+    tables: 
+      - name: lineitem
+      - name: customer
+      - name: orders
+      - name: partsupp
+      - name: supplier
+      - name: part
+      - name: nation
+      - name: region
+
+  - name: raw_data
+    database: MANDATUM
+    schema: TPCH_SF_{{ var('tpch_size') }}
     tables:
-      - name: LINEITEM
-      - name: CUSTOMER
-      - name: ORDERS
-      - name: PARTSUPP
-      - name: SUPPLIER
-      - name: PART
-      - name: NATION
-      - name: REGION
+      # depends on environment
+      - name: raw_lineitem
+        identifier: raw_lnd_lineitem
+
+      - name: raw_customer
+        identifier: raw_lnd_customer
+
+      - name: raw_orders
+        identifier: raw_lnd_orders
+
+      - name: raw_partsupp
+        identifier: raw_lnd_partsupp
+
+      - name: raw_supplier
+        identifier: raw_lnd_supplier
+
+      - name: raw_part
+        identifier: raw_lnd_part
+
+      - name: raw_nation
+        identifier: raw_lnd_nation
+
+      - name: raw_region
+        identifier: raw_lnd_region

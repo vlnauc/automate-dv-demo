@@ -1,51 +1,92 @@
-name: dbtvault_teradata_demo
-profile: dbt_vault
-version: '5.4.0'
-require-dbt-version: ['>=1.0.0', '<2.0.0']
-config-version: 2
 
-analysis-paths:
-  - analysis
-clean-targets:
-  - target
-seed-paths:
-  - seeds
-macro-paths:
-  - macros
-model-paths:
-  - models
-test-paths:
-  - tests
-target-path: target
+# Name your project! Project names should contain only lowercase characters
+# and underscores. A good package name should reflect your organization's
+# name or the intended use of these models
+name: 'mandatum_demo'
+version: '1.0.0'
+require-dbt-version: ['>=1.0.0', '<2.0.0']
+
+# This setting configures which "profile" dbt uses for this project.
+profile: 'mandatum_demo'
+
+# These configurations specify where dbt should look for different types of files.
+# The `model-paths` config, for example, states that models in this project can be
+# found in the "models/" directory. You probably won't need to change these!
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
 
 vars:
   load_date: '1992-01-08'
-  tpch_size: 10 #1, 10, 100, 1000, 10000
+  tpch_size: '1' #1, 10, 100, 1000, 10000
 
+# Configuring models
+# Full documentation: https://docs.getdbt.com/docs/configuring-models
+
+# In this example config, we tell dbt to build all models in the example/
+# directory as views. These settings can be overridden in the individual model
+# files using the `{{ config(...) }}` macro.
 models:
-  dbtvault_teradata_demo:
+  mandatum_demo:
+    # loading data from foreign tables to tables in DB for faster execution of view
+    raw_landing:
+      +schema: 'TPCH_SF_1'
+      +tags: 'lnd'
+
+    # here we start with models prepared by dbt team
     raw_stage:
       +materialized: view
-      +tags:
-        - 'raw'
+      +schema: STG
+      +tags: 'raw'
+
     stage:
       +materialized: view
-      +tags:
-        - 'stage'
+      +schema: STG
+      +tags: 'stage'
       +enabled: true
+
     raw_vault:
       +materialized: incremental
-      +tags:
-        - 'raw_vault'
+      +schema: VAULT
+      +tags: 'raw_vault'
       hubs:
-        +tags:
-          - 'hub'
+        +tags: 'hub'
       links:
-        +tags:
-          - 'link'
+        +tags: 'link'
       sats:
-        +tags:
-          - 'satellite'
+        +tags: 'satellite'
       t_links:
-        +tags:
-          - 't_link'
+        +tags: 't_link'
+
+# for direct loading of test data to TD Vantage Express
+# in ClearScape used S3 10G data
+seeds:
+  mandatum_demo:
+    250MB:
+      +schema: 'TPCH_SF_1'
+      +delimiter: "|"
+      raw_acq_customer:
+        index: PRIMARY INDEX (C_CUSTKEY)
+      raw_acq_lineitem:
+        index: PRIMARY INDEX (L_ORDERKEY)
+      raw_acq_nation:
+        index: PRIMARY INDEX (N_NATIONKEY)
+      raw_acq_orders:
+        index: PRIMARY INDEX (O_ORDERKEY)
+      raw_acq_part:
+        index: PRIMARY INDEX (P_PARTKEY)
+      raw_acq_partsupp:
+        index: PRIMARY INDEX (PS_PARTKEY)
+      raw_acq_region:
+        index: PRIMARY INDEX (R_REGIONKEY)
+      raw_acq_supplier:
+        index: PRIMARY INDEX (S_SUPPKEY)
+

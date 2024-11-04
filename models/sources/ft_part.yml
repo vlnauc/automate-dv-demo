@@ -1,0 +1,41 @@
+version: 2
+
+sources:
+  - name: teradata_external
+    database: MANDATUM
+    schema: TPCH_SF_1
+    loader: S3
+  
+    tables:
+      - name: FT_PART
+        external:
+          location: "/s3/s3.us-east-1.amazonaws.com/redshift-downloads/TPC-H/2.18/10GB/part.tbl"        # Amazon S3 path prefix
+          tbl_properties: "MAP = TD_MAP1"
+         
+        columns:
+          - name: P_PARTKEY
+            data_type: INTEGER
+
+          - name: P_NAME
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: P_MFGR
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: P_BRAND
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: P_TYPE
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: P_SIZE
+            data_type: INTEGER
+
+          - name: P_CONTAINER
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+
+          - name: P_RETAILPRICE
+            data_type: DECIMAL(10,2)
+
+          - name: P_COMMENT
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC

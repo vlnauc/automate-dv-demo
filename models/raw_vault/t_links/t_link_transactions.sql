@@ -1,7 +1,12 @@
 {%- set source_model = "v_stg_transactions" -%}
 {%- set src_pk = "TRANSACTION_PK" -%}
 {%- set src_fk = ["CUSTOMER_PK", "ORDER_PK"] -%}
-{%- set src_payload = ["TRANSACTION_NUMBER", "TRANSACTION_DATE", "xxxxTYPE", "AMOUNT"] -%}
+{% if target.type == 'snowflake' %}
+    {%- set src_payload = ["TRANSACTION_NUMBER", "TRANSACTION_DATE", "TYPE", "AMOUNT"] -%}
+{% elif target.type == 'teradata' %}
+    {%- set src_payload = ["TRANSACTION_NUMBER", "TRANSACTION_DATE", "TYPE_", "AMOUNT"] -%}
+{% endif %}
+
 {%- set src_eff = "EFFECTIVE_FROM" -%}
 {%- set src_ldts = "LOAD_DATE" -%}
 {%- set src_source = "RECORD_SOURCE" -%}

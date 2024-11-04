@@ -1,0 +1,39 @@
+version: 2
+
+sources:
+  - name: teradata_external
+    database: MANDATUM
+    schema: TPCH_SF_1
+    loader: S3
+  
+    tables:
+      - name: FT_CUSTOMER
+        external:
+          location: "/s3/s3.us-east-1.amazonaws.com/redshift-downloads/TPC-H/2.18/10GB/customer.tbl"        # Amazon S3 path prefix
+          tbl_properties: "MAP = TD_MAP1"
+
+        columns:
+          - name: C_CUSTKEY
+            data_type: INTEGER
+          
+          - name: C_NAME
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+          
+          - name: C_ADDRESS
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+          
+          - name: C_NATIONKEY
+            data_type: INTEGER
+          
+          - name: C_PHONE
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+          
+          - name: C_ACCTBAL
+            data_type: DECIMAL(10,2)
+          
+          - name: C_MKTSEGMENT
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+          
+          - name: C_COMMENT
+            data_type: VARCHAR(128) CHARACTER SET LATIN NOT CASESPECIFIC
+

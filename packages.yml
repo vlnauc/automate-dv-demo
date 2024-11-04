@@ -1,2 +1,16 @@
+# !!! when package is installed from GIT, VS Code has to be closed, it interferes with dbt cloning process !!!
 packages:
-  - local: ../automate-dv
+  - package: dbt-labs/dbt_utils
+    version: 1.3.0
+
+  #- local: "c:/Users/vn250013/OneDrive - Teradata/__WORK__/08_Mandatum/GIT/dbt-teradata-utils"
+  - git: "https://github.com/vlnauc/dbt-teradata-utils.git"
+    revision: "main"
+
+  #- local: "c:/Users/vn250013/OneDrive - Teradata/__WORK__/08_Mandatum/GIT/automate-dv"
+  - git: "https://github.com/vlnauc/automate-dv.git"
+    revision: "develop"
+
+  #- local: "c:/Users/vn250013/OneDrive - Teradata/__WORK__/08_Mandatum/GIT/dbt-external-tables"
+  - git: "https://github.com/vlnauc/dbt-external-tables.git"
+    revision: "develop"

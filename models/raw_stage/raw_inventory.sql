@@ -23,14 +23,18 @@ SELECT
     d.N_REGIONKEY AS SUPPLIER_REGION_KEY,
     e.R_NAME AS SUPPLIER_REGION_NAME,
     e.R_COMMENT AS SUPPLIER_REGION_COMMENT
-FROM {{ source('tpch_sample', 'PARTSUPP') }} AS a
-LEFT JOIN {{ source('tpch_sample', 'SUPPLIER') }} AS b
+FROM {{ source('raw_data', 'raw_partsupp') }} AS a
+LEFT JOIN {{ source('raw_data', 'raw_supplier') }} AS b
     ON a.PS_SUPPKEY = b.S_SUPPKEY
-LEFT JOIN {{ source('tpch_sample', 'PART') }} AS c
+LEFT JOIN {{ source('raw_data', 'raw_part') }} AS c
     ON a.PS_PARTKEY = c.P_PARTKEY
-LEFT JOIN {{ source('tpch_sample', 'NATION') }} AS d
+LEFT JOIN {{ source('raw_data', 'raw_nation') }} AS d
     ON b.S_NATIONKEY = d.N_NATIONKEY
-LEFT JOIN {{ source('tpch_sample', 'REGION') }} AS e
+LEFT JOIN {{ source('raw_data', 'raw_region') }} AS e
     ON d.N_REGIONKEY = e.R_REGIONKEY
 JOIN {{ ref('raw_orders') }} AS f
     ON a.PS_PARTKEY = f.PARTKEY AND a.PS_SUPPKEY=f.SUPPLIERKEY
+-- order is not allowed in teradata
+{% if target.type == 'snowflake' %}
+    ORDER BY a.PS_PARTKEY, a.PS_SUPPKEY
+{% endif %}

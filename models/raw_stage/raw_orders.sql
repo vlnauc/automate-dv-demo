@@ -35,21 +35,27 @@ SELECT
     d.N_COMMENT AS CUSTOMER_NATION_COMMENT,
     e.R_NAME AS CUSTOMER_REGION_NAME,
     e.R_COMMENT AS CUSTOMER_REGION_COMMENT
-FROM {{ source('tpch_sample', 'ORDERS') }} AS b
-LEFT JOIN {{ source('tpch_sample', 'LINEITEM') }} AS a
+FROM {{ source('raw_data', 'raw_orders') }} AS b
+LEFT JOIN {{ source('raw_data', 'raw_lineitem') }} AS a
     ON a.L_ORDERKEY = b.O_ORDERKEY
-LEFT JOIN {{ source('tpch_sample', 'CUSTOMER') }} AS c
+LEFT JOIN {{ source('raw_data', 'raw_customer') }} AS c
     ON b.O_CUSTKEY  = c.C_CUSTKEY
-LEFT JOIN {{ source('tpch_sample', 'NATION') }} AS d
+LEFT JOIN {{ source('raw_data', 'raw_nation') }} AS d
     ON c.C_NATIONKEY  = d.N_NATIONKEY
-LEFT JOIN {{ source('tpch_sample', 'REGION') }} AS e
+LEFT JOIN {{ source('raw_data', 'raw_region') }} AS e
     ON d.N_REGIONKEY  = e.R_REGIONKEY
-LEFT JOIN {{ source('tpch_sample', 'PART') }} AS g
+LEFT JOIN {{ source('raw_data', 'raw_part') }} AS g
     ON a.L_PARTKEY = g.P_PARTKEY
-LEFT JOIN {{ source('tpch_sample', 'SUPPLIER') }} AS h
+LEFT JOIN {{ source('raw_data', 'raw_supplier') }} AS h
     ON a.L_SUPPKEY = h.S_SUPPKEY
-LEFT JOIN {{ source('tpch_sample', 'NATION') }} AS j
+LEFT JOIN {{ source('raw_data', 'raw_nation') }} AS j
     ON h.S_NATIONKEY = j.N_NATIONKEY
-LEFT JOIN {{ source('tpch_sample', 'REGION') }} AS k
+LEFT JOIN {{ source('raw_data', 'raw_region') }} AS k
     ON j.N_REGIONKEY = k.R_REGIONKEY
-WHERE b.O_ORDERDATE = TO_DATE('{{ var('load_date') }}')
+{% if target.type == 'snowflake' %}
+    -- snowflake
+    WHERE b.O_ORDERDATE = TO_DATE('{{ var('load_date') }}') 
+{% else %}
+    --teradata
+    WHERE b.O_ORDERDATE = CAST (('{{ var('load_date') }}') AS DATE FORMAT 'YYYY-MM-DD') 
+{% endif %}

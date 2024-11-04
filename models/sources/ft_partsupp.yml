@@ -1,0 +1,29 @@
+version: 2
+
+sources:
+  - name: teradata_external
+    database: MANDATUM
+    schema: TPCH_SF_1
+    loader: S3
+  
+    tables:
+      - name: FT_PARTSUPP
+        external:
+          location: "/s3/s3.us-east-1.amazonaws.com/redshift-downloads/TPC-H/2.18/10GB/partsupp.tbl"        # Amazon S3 path prefix
+          tbl_properties: "MAP = TD_MAP1"
+         
+        columns:
+          - name: PS_PARTKEY
+            data_type: INTEGER
+
+          - name: PS_SUPPKEY
+            data_type: INTEGER
+
+          - name: PS_AVAILQTY
+            data_type: INTEGER
+
+          - name: PS_SUPPLYCOST
+            data_type: FLOAT
+
+          - name: PS_COMMENT
+            data_type: VARCHAR(256) CHARACTER SET LATIN NOT CASESPECIFIC

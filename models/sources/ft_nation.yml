@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: teradata_external
+    database: MANDATUM
+    schema: TPCH_SF_1
+    loader: S3
+  
+    tables:
+      - name: FT_NATION
+        external:
+          location: "/s3/s3.us-east-1.amazonaws.com/redshift-downloads/TPC-H/2.18/10GB/nation.tbl"        # Amazon S3 path prefix
+          tbl_properties: "MAP = TD_MAP1"
+         
+        columns:
+          - name: N_NATIONKEY
+            data_type: INTEGER
+            
+          - name: N_NAME
+            data_type: VARCHAR(50) CHARACTER SET LATIN NOT CASESPECIFIC
+            
+          - name: N_REGIONKEY
+            data_type: INTEGER
+            
+          - name: N_COMMENT
+            data_type: VARCHAR(128) CHARACTER SET LATIN NOT CASESPECIFIC
+            
